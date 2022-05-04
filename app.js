@@ -15,4 +15,4 @@ const userRoutes = require('./routes/usersRoutes');
 
 app.use('/users', userRoutes);
 
-module.exports = server;
+module.exports = app;
