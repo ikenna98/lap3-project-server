@@ -9,6 +9,10 @@ const server = require('./app');
 //     }
 // });
 
+server.prependListener("request", (req, res) => {
+    res.setHeader("Access-Control-Allow-Origin", "*");
+ });
+ 
 const port = process.env.PORT || 5001;
 server.listen(port, () => console.log(`Express is running on port ${port}`));
 
