@@ -74,7 +74,11 @@ io.on('connection', socket => {
             // Notifies everyone that a specific user has left
             socket.on('start-quiz', () => {
                 socket.broadcast.to(data.roomName).emit("start-quiz", `${data.username} has started their quiz!`)
-            })
+            });
+            // Score is sent to server, username and score are emitted
+            socket.on('end-quiz', score => {
+                io.to(data.roomName).emit("end-quiz", {username: data.username, score: score})
+            });
             
             socket.on('disconnect', () => {
                 io.to(data.roomName).emit("join-room", `${data.username} has left!`)
