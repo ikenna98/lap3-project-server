@@ -61,18 +61,10 @@ io.on('connection', socket => {
             // url param is a string that contains the API link
             
             socket.on('room-url', url => {
-                if(data.creator){io.to(data.roomName).emit('room-url', url)}
+                socket.broadcast.to(data.roomName).emit('room-url', url)
                 console.log(url)
             });
                
-            if(data.creator){
-                console.log(data.creator);
-                io.to(data.roomName).emit('start-btn', true);
-                // socket.to(data.roomName).emit('start-btn', false);
-            } else {
-                io.to(data.roomName).emit('start-btn', false);
-            }
-
             socket.on('new-msg', (message) => {
                 socket.broadcast.to(data.roomName).emit('new-msg', `${data.username}: ${message}`);
             })
