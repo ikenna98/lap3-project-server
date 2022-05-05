@@ -72,10 +72,18 @@ io.on('connection', socket => {
             } else {
                 io.to(data.roomName).emit('start-btn', false);
             }
+
+            socket.on('new-msg', (message) => {
+                socket.broadcast.to(data.roomName).emit('new-msg', `${data.username}: ${message}`);
+            })
             // Tell everyone a user joined
             socket.broadcast.to(data.roomName).emit("join-room", `${data.username} has joined the room!`);
             console.log(io.sockets.adapter.rooms);
             // Notifies everyone that a specific user has left
+            socket.on('start-quiz', () => {
+                socket.broadcast.to(data.roomName).emit("start-quiz", `${data.username} has started their quiz!`)
+            })
+            
             socket.on('disconnect', () => {
                 io.to(data.roomName).emit("join-room", `${data.username} has left!`)
             })
