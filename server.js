@@ -77,7 +77,7 @@ io.on('connection', socket => {
             });
             // Score is sent to server, username and score are emitted
             socket.on('end-quiz', score => {
-                io.to(data.roomName).emit("end-quiz", {username: data.username, score: score})
+                socket.broadcast.to(data.roomName).emit("end-quiz", {username: data.username, score: score})
             });
             
             socket.on('disconnect', () => {
