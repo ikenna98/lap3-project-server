@@ -59,16 +59,17 @@ io.on('connection', socket => {
             console.log(socket.rooms);
             // socket.rooms.has(data.roomName) ? console.log('Successfully entered room!') : console.log('Not in room!');
             // url param is a string that contains the API link
+            
             socket.on('room-url', url => {
-                io.to(data.roomName).emit('room-url', url);
+                if(data.creator){io.to(data.roomName).emit('room-url', url)}
                 console.log(url)
             });
+               
             if(data.creator){
                 console.log(data.creator);
                 io.to(data.roomName).emit('start-btn', true);
                 // socket.to(data.roomName).emit('start-btn', false);
-            } 
-            else {
+            } else {
                 io.to(data.roomName).emit('start-btn', false);
             }
             // Tell everyone a user joined
