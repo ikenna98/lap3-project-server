@@ -1,5 +1,6 @@
 const dotenv = require('dotenv');
 dotenv.config();
+const db = require('./dbConfig');
 // require('./socket');
 const app = require("./app");
 const server = require("http").createServer(app);
@@ -17,6 +18,7 @@ const io = require("socket.io")(server, {
 // });
 
 const port = process.env.PORT || 5001;
+let sendScore;
 
 io.on('connection', socket => {
     console.log("New connection has been made..."); // runs when client first connects
@@ -76,8 +78,9 @@ io.on('connection', socket => {
                 socket.broadcast.to(data.roomName).emit("start-quiz", `${data.username} has started their quiz!`)
             });
             // Score is sent to server, username and score are emitted
-            socket.on('end-quiz', score => {
-                io.to(data.roomName).emit("end-quiz", {username: data.username, score: score})
+            socket.on('end-quiz', async score => {
+                sendScore = await db.query(`INSERT INTO users (username, score) VALUES ($1, $2) RETURNING *;`, [ data.username, score ]);
+                socket.broadcast.to(data.roomName).emit("end-quiz", {username: data.username, score: score})
             });
             
             socket.on('disconnect', () => {
@@ -104,6 +107,8 @@ io.on('connection', socket => {
 });
 
 server.listen(port, () => console.log(`Express is running on port ${port}`));
+
+module.exports = {sendScore};
 
 // io.on('connection', socket => {
 //     console.log("New connection has been made..."); // runs when client first connects

@@ -1,4 +1,5 @@
 const db = require('../dbConfig');
+let {userScore} = require('../server');
 
 class User {
     constructor(data){
@@ -20,7 +21,7 @@ class User {
     static addUserData(data) {
         return new Promise(async (resolve, reject) => {
             try {
-                let user = await db.query(`INSERT INTO users (username, score) VALUES ($1, $2) RETURNING *;`, [ data.username, data.score ]);
+                let user = userScore;
                 let newUser = new User(user.rows[0])
                 resolve(newUser)
             } catch (err) {
