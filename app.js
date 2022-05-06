@@ -13,5 +13,7 @@ app.get('/', (req, res) => {
 const userRoutes = require('./routes/usersRoutes');
 
 app.use('/users', userRoutes);
+// Lobby leaderboard integration:
+// app.use('/rooms')
 
 module.exports = app;

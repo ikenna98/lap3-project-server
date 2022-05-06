@@ -34,11 +34,6 @@ io.on('connection', socket => {
     io.emit('admin-message', `There ${participantCount === 1 ? "is 1 fact hunter": `are ${participantCount} fact hunters`} here now!`);
 
     io.emit('client-number',participantCount);
-    // socket.on('create-room', async data => {
-    //     Array.from(socket.rooms)
-    //         .filter((r) => r !== socket.id)
-    //         .forEach((r) => socket.leave(r));
-    // })
 
     // data param is an object of values sent from the form e.g: {roomName: e.target.roomName.value, username: e.target.username.value, creator: false}
     socket.on("join-room", data => {
@@ -46,7 +41,6 @@ io.on('connection', socket => {
         Array.from(socket.rooms)
             .filter((r) => r !== socket.id)
             .forEach((r) => socket.leave(r));
-        // io.sockets.adapter.rooms.has(data.roomName) ? console.log('this room already exists') : console.log('this is a new room');
 
         if ( (!io.sockets.adapter.rooms.has(data.roomName) && !data.creator) || (io.sockets.adapter.rooms.has(data.roomName) && data.creator) ){
             socket.emit('room-exists', false)
@@ -55,17 +49,21 @@ io.on('connection', socket => {
             socket.emit('room-exists', true)
         
             socket.join(data.roomName);
-            // if(data.url){io.to(data.roomName).emit('room-url', data.url)};
-            // data.url ? 
             console.log(`${data.username} joined ${data.roomName}`);
             console.log(socket.rooms);
-            // socket.rooms.has(data.roomName) ? console.log('Successfully entered room!') : console.log('Not in room!');
+            console.log(socket.id);
+
             // url param is a string that contains the API link
-            
             socket.on('room-url', url => {
                 socket.broadcast.to(data.roomName).emit('room-url', url)
                 console.log(url)
             });
+
+            // Integrating lobby leaderboard:
+            // socket.emit('socket-id', socket.id)
+            // socket.on('room-id', id => {
+            //     socket.broadcast.to(data.roomName).emit('room-id', id)
+            // });
                
             socket.on('new-msg', (message) => {
                 socket.broadcast.to(data.roomName).emit('new-msg', `${data.username}: ${message}`);
@@ -89,19 +87,7 @@ io.on('connection', socket => {
         } 
       });
 
-    // socket.on('room-url', data => {
-    //     io.to(data.roomName).emit('room-url', data.url);
-    //     console.log(data.url)
-    // });
-
-    // socket.on('room-url', data => {
-    //     io.to(data.roomName).emit('room-url-join', data.url);
-    //     console.log(data.url);
-    //     socket.to(data.roomName).emit('start-btn', true);
-    // })
-
     socket.on("disconnect", () => { // runs when client disconnects
-        // io.to(data.roomName).emit("join-room", `${data.username} has left!`)
         console.log("Goodbye...");
     });
 });

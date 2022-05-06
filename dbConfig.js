@@ -9,7 +9,16 @@ if (process.env.NODE_ENV === 'production') {
   	    },
   });
 } else {
-    pool = new Pool();
+    pool = new Pool(
+	// 	// Content inside new pool is for locl postgres db:
+	// 	{
+	// 	user: 'lap3',
+	// 	host: 'localhost',
+	// 	database: 'lap3project',
+	// 	password: 'password',
+	// 	port: 5432,
+	// }
+	);
 }
 
 module.exports = pool;
